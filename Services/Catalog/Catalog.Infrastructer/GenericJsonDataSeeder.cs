@@ -14,13 +14,8 @@ public class GenericJsonDataSeeder<T> where T: BaseEntity
         }
 
         var jsonData = await File.ReadAllTextAsync(path);
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-        List<T> entities = JsonSerializer.Deserialize<List<T>>(jsonData);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        List<T> entities = JsonSerializer.Deserialize<List<T>>(jsonData) ?? throw new NullReferenceException();
 
-        if (entities is not null )
-        {
-            await mongoCollection.InsertManyAsync(entities);
-        }
+        await mongoCollection.InsertManyAsync(entities);
     }
 }
