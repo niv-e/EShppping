@@ -11,7 +11,7 @@ public class BrandRepository : IBrandRepository
     {
         collection = mongoRepository;
     }
-    public async Task<IEnumerable<ProductBrand>> GetProductBrands()
+    public async Task<IEnumerable<ProductBrand>> GetAllBrands()
     {
         return await collection.Find(brand => true)
             .ToListAsync();     
