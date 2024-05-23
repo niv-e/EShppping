@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace Catalog.Infrastructure;
+namespace Catalog.Infrastructure.RepositoryFactory;
 public class BaseEntityBsonClassMapper
 {
     public BaseEntityBsonClassMapper()

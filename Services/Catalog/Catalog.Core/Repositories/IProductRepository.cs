@@ -1,10 +1,10 @@
 ﻿public interface IProductRepository
 {
-    Task<IAsyncEnumerable<Product>> GetProducts();
-    Task<Product?> GetProductById(int id);
-    Task<IAsyncEnumerable<Product>> GetProductsByName(string name);
-    Task<IAsyncEnumerable<Product?>> GetProductsByBrand(string brand);
-    Task<OperationResult<Product>> CreateProduct(Product product);
-    Task<OperationResult<Product>> UpdateProduct(Product product);
-    Task<OperationResult<Product>> DeleteProduct(int id);
+    Task<IEnumerable<Product>> GetProducts(int pageNumber, int pageSize);
+    Task<Product?> GetProductById(string id);
+    Task<IEnumerable<Product>> GetProductsByName(string name);
+    Task<IEnumerable<Product>> GetProductsByBrand(string name);
+    Task CreateProduct(Product product);
+    Task<UpdateOneResult> UpdateProduct(Product product);
+    Task<DeleteResult> DeleteProduct(string id);
 }
