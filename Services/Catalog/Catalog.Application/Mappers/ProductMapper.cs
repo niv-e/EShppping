@@ -9,7 +9,8 @@ public static class ProductMapper
     {
         var config = new MapperConfiguration(cfg =>
         {
-            cfg.ShouldMapProperty = p => p.GetMethod!.IsPrivate || p.GetMethod.IsAssembly;
+            cfg.ShouldMapProperty = p => p.GetMethod!.IsPublic || p.GetMethod.IsAssembly;
+            cfg.ShouldUseConstructor = constructor => constructor.IsPublic;
             cfg.AddProfile<ProductMappingProfile>();
         });
         var mapper = config.CreateMapper();
