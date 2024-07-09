@@ -12,9 +12,9 @@ public class CreateProductCommand : IRequest<ProductResponse>
 {
     public required string Name { get; init; }
     public required decimal Price { get; init; }
-    public string? Summary { get; set; }
-    public string? Description { get; set; }
-    public string? ImageFile { get; set; }
-    public ProductBrand? Brand { get; set; }
-    public ProductType? Type { get; set; }
-}
+    public string? Summary { get; init; }
+    public string? Description { get; init; }
+    public string? ImageFile { get; init; }
+    public ProductBrand? Brand { get; init; }
+    public ProductType? Type { get; init; }
+} 
