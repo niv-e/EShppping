@@ -4,7 +4,7 @@
     Task<Product?> GetProductById(string id);
     Task<IEnumerable<Product>> GetProductsByName(string name);
     Task<IEnumerable<Product>> GetProductsByBrand(string name);
-    Task CreateProduct(Product product);
+    Task<Product> CreateProduct(Product product);
     Task<UpdateOneResult> UpdateProduct(Product product);
     Task<DeleteResult> DeleteProduct(string id);
 }

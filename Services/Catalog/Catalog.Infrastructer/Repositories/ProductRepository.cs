@@ -10,8 +10,11 @@ public class ProductRepository : IProductRepository
     {
         this.collection = productsCollection;
     }
-    public async Task CreateProduct(Product product) => await collection.InsertOneAsync(product);
-
+    public async Task<Product> CreateProduct(Product product)
+    {
+        await collection.InsertOneAsync(product);
+        return product;
+    }
     public async Task<DeleteResult> DeleteProduct(string id)
     {
         var deleteResults = await collection.DeleteOneAsync(filter: product => product.Id! == id);
