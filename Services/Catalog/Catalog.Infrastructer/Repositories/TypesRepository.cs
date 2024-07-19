@@ -6,9 +6,9 @@ public class TypesRepository : ITypesRepository
 {
     private readonly IMongoCollection<ProductType> collection;
 
-    public TypesRepository(IMongoCollection<ProductType> typessCollection)
+    public TypesRepository(MongoCollectionFactory collectionFactory)
     {
-        collection = typessCollection;
+        collection = collectionFactory.GetCollection<ProductType>();
     }
 
     public async Task<IEnumerable<ProductType>> GetProductTypes()

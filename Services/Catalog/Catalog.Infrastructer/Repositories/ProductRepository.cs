@@ -6,9 +6,10 @@ public class ProductRepository : IProductRepository
 {
     private readonly IMongoCollection<Product> collection;
 
-    public ProductRepository(IMongoCollection<Product> productsCollection)
+    public ProductRepository(MongoCollectionFactory collectionFactory)
     {
-        this.collection = productsCollection;
+        collection = collectionFactory.GetCollection<Product>();
+
     }
     public async Task<Product> CreateProduct(Product product)
     {

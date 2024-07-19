@@ -1,7 +1,11 @@
 using Asp.Versioning;
 using Asp.Versioning.Conventions;
 using Catalog.API.OpenApi;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Catalog.Application.Handlers;
+using Catalog.Infrastructure.Repositories;
+using Catalog.Infrastructure.RepositoryFactory;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -25,11 +29,15 @@ builder.Services.AddApiVersioning(options =>
         options.GroupNameFormat = "'v'VVV";
     });
 
-builder.Services.AddHealthChecks()
-    .AddMongoDb(
-        builder.Configuration["DatabaseSettings:ConnectionString"]!,
-        "Catalog MongoDB health Check",
-        HealthStatus.Degraded);
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddMediatR(configurations =>
+    configurations.RegisterServicesFromAssembly(typeof(CreateProductHandler).Assembly));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IBrandRepository, BrandRepository>();
+builder.Services.AddScoped<ITypesRepository, TypesRepository>();
+builder.Services.AddDataAccessor();
+builder.Services.AddDbHealthCheck(builder.Configuration["DatabaseSettings:ConnectionString"]);
+
 
 var app = builder.Build();
 
@@ -45,6 +53,13 @@ app.UseStaticFiles();
 app.UseAuthorization();
 app.UseHttpsRedirection();
 app.MapControllers();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 app.MapGet("/hello", () => "Hellow world v1")
     .WithApiVersionSet(versionSet)
     .MapToApiVersion(1);
@@ -52,6 +67,7 @@ app.MapGet("/hello", () => "Hellow world v1")
 app.MapGet("/hello", () => "Hellow world v2")
     .WithApiVersionSet(versionSet)
     .MapToApiVersion(2);
+
 
 if (app.Environment.IsDevelopment())
 {

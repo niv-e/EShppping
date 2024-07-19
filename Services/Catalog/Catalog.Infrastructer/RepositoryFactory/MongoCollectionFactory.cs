@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 
-public class MongoRepositoryFactory
+public class MongoCollectionFactory
 {
-    private static MongoClient? _mongoClient;
-    private static IMongoDatabase? _mongoDb;
+    private MongoClient? _mongoClient;
+    private IMongoDatabase? _mongoDb;
 
-    public MongoRepositoryFactory(IConfiguration configurations)
+    public MongoCollectionFactory(IConfiguration configurations)
     {
         _mongoClient = new MongoClient(configurations.GetValue<string>("DatabaseSettings:ConnectionString"));
         _mongoDb = _mongoClient.GetDatabase(configurations.GetValue<string>("DatabaseSettings:DatabaseName"));
     }
-    public static IMongoCollection<T> CreateRepository<T>() where T : BaseEntity
+    public IMongoCollection<T> GetCollection<T>() where T : BaseEntity
     {
         return _mongoDb!.GetCollection<T>(typeof(T).Name);
-
     }
 }

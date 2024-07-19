@@ -7,9 +7,9 @@ public class BrandRepository : IBrandRepository
 {
     private readonly IMongoCollection<ProductBrand> collection;
 
-    public BrandRepository(IMongoCollection<ProductBrand> mongoRepository)
+    public BrandRepository(MongoCollectionFactory collectionFactory )
     {
-        collection = mongoRepository;
+        collection = collectionFactory.GetCollection<ProductBrand>();
     }
     public async Task<IEnumerable<ProductBrand>> GetAllBrands()
     {
