@@ -4,12 +4,15 @@ using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.ReportGenerator;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 
 class Build : NukeBuild
 {
@@ -20,6 +23,11 @@ class Build : NukeBuild
 
     [Solution] readonly Solution Solution;
 
+    AbsolutePath TestsDirectory => RootDirectory / "tests";
+    AbsolutePath TestResultsDirectory => RootDirectory / "test-results";
+    AbsolutePath CoverageResultsDirectory => RootDirectory / "coverage-results";
+    AbsolutePath CoverageReport => CoverageResultsDirectory / "coverage-report";
+
     Target Clean => _ => _
         .Before(Restore)
         .Executes(() =>
@@ -27,6 +35,8 @@ class Build : NukeBuild
             DotNetClean(s => s
                 .SetProject(Solution)
                 .SetConfiguration(Configuration));
+            EnsureCleanDirectory(TestResultsDirectory);
+            EnsureCleanDirectory(CoverageResultsDirectory);
         });
 
     Target Restore => _ => _
@@ -50,15 +60,38 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
+            if (IsLocalBuild)
+            {
+                System.Diagnostics.Debugger.Launch();
+            }
             DotNetTest(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
                 .EnableNoRestore()
-                .EnableNoBuild());
+                .EnableNoBuild()
+                .EnableCollectCoverage()
+                .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                .SetCoverletOutput(CoverageResultsDirectory / "coverage.cobertura.xml")
+                .SetResultsDirectory(TestResultsDirectory));
+        });
+
+    Target Coverage => _ => _
+        .DependsOn(Test)
+        .Executes(() =>
+        {
+            if (IsLocalBuild)
+            {
+                System.Diagnostics.Debugger.Launch();
+            }
+
+            ReportGenerator(s => s
+                .SetReports(CoverageResultsDirectory / "*.xml")
+                .SetTargetDirectory(CoverageReport)
+                .SetReportTypes(ReportTypes.HtmlInline));
         });
 
     Target Publish => _ => _
-        .DependsOn(Test)
+        .DependsOn(Coverage)
         .OnlyWhenStatic(() => Configuration.Equals(Configuration.Release))
         .Executes(() =>
         {
