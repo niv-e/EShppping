@@ -68,6 +68,9 @@ app.MapGet("/hello", () => "Hellow world v2")
     .WithApiVersionSet(versionSet)
     .MapToApiVersion(2);
 
+app.MapGet("/", () => "Hellow world")
+    .WithApiVersionSet(versionSet)
+    .MapToApiVersion(2);
 
 if (app.Environment.IsDevelopment())
 {
@@ -87,4 +90,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
- 
+
+//Use for finding the API project when do integration tests
+public partial class Program { };
