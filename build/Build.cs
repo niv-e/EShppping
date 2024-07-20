@@ -35,8 +35,8 @@ class Build : NukeBuild
             DotNetClean(s => s
                 .SetProject(Solution)
                 .SetConfiguration(Configuration));
-            EnsureCleanDirectory(TestResultsDirectory);
-            EnsureCleanDirectory(CoverageResultsDirectory);
+            AbsolutePath.Create(TestResultsDirectory).CreateOrCleanDirectory();
+            AbsolutePath.Create(CoverageResultsDirectory).CreateOrCleanDirectory();
         });
 
     Target Restore => _ => _
@@ -60,10 +60,6 @@ class Build : NukeBuild
         .DependsOn(Compile)
         .Executes(() =>
         {
-            if (IsLocalBuild)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }
             DotNetTest(s => s
                 .SetProjectFile(Solution)
                 .SetConfiguration(Configuration)
@@ -73,17 +69,22 @@ class Build : NukeBuild
                 .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
                 .SetCoverletOutput(CoverageResultsDirectory / "coverage.cobertura.xml")
                 .SetResultsDirectory(TestResultsDirectory));
+            Serilog.Log.Information($"Test target completed. Checking for coverage file...");
+            if (AbsolutePath.Create(CoverageResultsDirectory / "coverage.cobertura.xml").FileExists())
+            {
+                Serilog.Log.Information("Coverage file found.");
+            }
+            else
+            {
+                Serilog.Log.Error("Coverage file not found!");
+            }
+
         });
 
     Target Coverage => _ => _
         .DependsOn(Test)
         .Executes(() =>
         {
-            if (IsLocalBuild)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }
-
             ReportGenerator(s => s
                 .SetReports(CoverageResultsDirectory / "*.xml")
                 .SetTargetDirectory(CoverageReport)
