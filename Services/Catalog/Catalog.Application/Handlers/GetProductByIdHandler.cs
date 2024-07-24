@@ -17,8 +17,8 @@ public class GetProductByIdHandler : IRequestHandler<GetProductByIdQuery, Produc
 
     public async Task<ProductResponse> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        var product = await _productsRepostory.GetProductById(request.id)
-            ?? throw new NullReferenceException($"Could not find product with id: { request.id }");
+        var product = await _productsRepostory.GetProductById(request.Id)
+            ?? throw new NullReferenceException($"Could not find product with id: { request.Id }");
         var productResponse = ProductMapper.Mapper.Map<ProductResponse>(product);
         return productResponse;
     }

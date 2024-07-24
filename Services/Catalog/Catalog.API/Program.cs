@@ -37,8 +37,8 @@ builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ITypesRepository, TypesRepository>();
 builder.Services.AddDataAccessor();
 builder.Services.AddDbHealthCheck(builder.Configuration["DatabaseSettings:ConnectionString"]);
-
-
+builder.Services.AddControllers();
+   
 var app = builder.Build();
 
 var versionSet = app.NewApiVersionSet()

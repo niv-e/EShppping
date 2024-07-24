@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Catalog.Application.Queries;
 
-public class GetProductByIdQuery : IRequest<ProductResponse>
+public class GetProductByIdQuery(string id) : IRequest<ProductResponse>
 {
-    public required string id { init; get; }
+    public readonly string Id = id;
 }

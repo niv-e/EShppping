@@ -47,16 +47,12 @@ public class ProductRepository : IProductRepository
                                      .ToListAsync();
 
     }
-    public async Task<IEnumerable<Product>> GetProductsByBrand(string name)
-    {
-        var filter = Builders<Product>.Filter.Eq(product => product!.Brand!.Name, name);
-        return await collection.Find(filter)
-            .ToListAsync();
-    }
 
-    public async Task<IEnumerable<Product>> GetProductsByName(string name)
+    public async Task<IEnumerable<Product>> GetProductsBy(ProductsFilter productsFilter)
     {
-        var filter = Builders<Product>.Filter.Eq(product => product!.Name, name);
+        var filter = Builders<Product>.Filter.Eq(product => product!.Name, productsFilter.ProductName);
+        filter = filter | Builders<Product>.Filter.Eq(product => product!.Brand!.Name, productsFilter.ProductBrand);
+
         return await collection.Find(filter)
             .ToListAsync();
     }
