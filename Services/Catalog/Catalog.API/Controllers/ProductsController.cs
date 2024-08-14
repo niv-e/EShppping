@@ -4,6 +4,7 @@ using MediatR;
 using Catalog.Application.Queries;
 using System.Net;
 using Catalog.Application.Commands;
+using Catalog.Core.Specs;
 
 namespace Catalog.API.Controllers;
 
@@ -27,16 +28,12 @@ public class ProductsController : ApiController
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IList<ProductResponse>), ((int)HttpStatusCode.OK))]
-    public async Task<ActionResult<IList<ProductResponse>>> GetProductsBy(
-        [FromQuery] string? brandName = null,
-        [FromQuery] string? productName = null)
+    [ProducesResponseType(typeof(List<ProductResponse>), ((int)HttpStatusCode.OK))]
+    public async Task<ActionResult<ProductResponse>> GetProductsBy(
+        [FromQuery] CatalogSpecParams catalogSpecParams)
     {
-        var getProdcutsByQuery = new GetProductsByQuery()
-        {
-            BrandName = brandName,
-            ProductName = productName
-        };
+        var getProdcutsByQuery = new GetProductsQuery(catalogSpecParams);
+
         var results = await _mediator.Send(getProdcutsByQuery);
         return Ok(results);
     }
