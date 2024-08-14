@@ -1,9 +1,9 @@
 ﻿using MongoDB.Driver;
 using System.Text.Json;
 
-public class GenericJsonDataSeeder<T> where T: BaseEntity
+internal class GenericJsonDataSeeder
 {
-    public static async Task SeedData(IMongoCollection<T> mongoCollection, string path)
+    internal static async Task SeedData<T>(IMongoCollection<T> mongoCollection, string path) where T : BaseEntity
     {
         var documentCountEsimation =
             await mongoCollection.EstimatedDocumentCountAsync(new EstimatedDocumentCountOptions());

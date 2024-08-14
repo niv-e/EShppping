@@ -9,7 +9,7 @@ public static class HostDbDependenciesExtensions
 {
     public static IServiceCollection AddDataAccessor(this IServiceCollection services)
     {
-        services.AddScoped(typeof(MongoCollectionFactory));
+        services.AddSingleton(typeof(MongoCollectionFactory));
 
         return services;
     }

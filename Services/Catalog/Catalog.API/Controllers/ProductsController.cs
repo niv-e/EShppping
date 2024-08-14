@@ -29,8 +29,8 @@ public class ProductsController : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(IList<ProductResponse>), ((int)HttpStatusCode.OK))]
     public async Task<ActionResult<IList<ProductResponse>>> GetProductsBy(
-        [FromQuery] string brandName,
-        [FromQuery] string productName)
+        [FromQuery] string? brandName = null,
+        [FromQuery] string? productName = null)
     {
         var getProdcutsByQuery = new GetProductsByQuery()
         {

@@ -6,6 +6,7 @@ using Catalog.Infrastructure.Repositories;
 using Catalog.Infrastructure.RepositoryFactory;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -35,6 +36,8 @@ builder.Services.AddMediatR(configurations =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<ITypesRepository, TypesRepository>();
+builder.Services.AddSingleton<DatabaseSeedingTask>();
+builder.Services.AddSingleton<DatabaseSeedingTask>();
 builder.Services.AddDataAccessor();
 builder.Services.AddDbHealthCheck(builder.Configuration["DatabaseSettings:ConnectionString"]);
 builder.Services.AddControllers();
@@ -46,7 +49,8 @@ var versionSet = app.NewApiVersionSet()
     .HasApiVersion(2)
     .ReportApiVersions()
     .Build();
-
+var databaseSeedingTask = app.Services.GetRequiredService<DatabaseSeedingTask>();
+await databaseSeedingTask.Run();
 // Configure the HTTP request pipeline.
 app.UseRouting();
 app.UseStaticFiles();
