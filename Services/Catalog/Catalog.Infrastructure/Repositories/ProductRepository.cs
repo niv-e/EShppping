@@ -90,8 +90,8 @@ public class ProductRepository : IProductRepository
     {
         var sort = catalogSpecParams.Sort switch
         {
-            "priceAsc" => Builders<Product>.Sort.Ascending("Price"),
-            "priceDesc" => Builders<Product>.Sort.Descending("Price"),
+            SortOption.PriceAsc => Builders<Product>.Sort.Ascending("Price"),
+            SortOption.PriceDesc => Builders<Product>.Sort.Descending("Price"),
             _ => Builders<Product>.Sort.Ascending("Name")
         };
 

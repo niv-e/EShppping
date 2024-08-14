@@ -12,7 +12,7 @@ public class CatalogSpecParams
     }
     public string? BrandId { get; set; }
     public string? TypeId { get; set; }
-    public string? Sort { get; set; }
+    public SortOption Sort { get; set; } = SortOption.Default;
     public string? Search { get; set; }
 
 }
