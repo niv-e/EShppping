@@ -10,6 +10,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Cart/Cart.API/Cart.API.csproj", "Services/Cart/Cart.API/"]
+COPY ["Services/Cart/Cart.Infrastructure/Cart.Infrastructure.csproj", "Services/Cart/Cart.Infrastructure/"]
+COPY ["Services/Cart/Cart.Application/Cart.Application.csproj", "Services/Cart/Cart.Application/"]
+COPY ["Services/Cart/Cart.Core/Cart.Core.csproj", "Services/Cart/Cart.Core/"]
 RUN dotnet restore "./Services/Cart/Cart.API/Cart.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Cart/Cart.API"

@@ -14,7 +14,7 @@ internal class TotalPriceCalculator
         decimal totalPrice = 0;
         foreach (var item in shoppingCart.Items)
         {
-            totalPrice += item.Price;
+            totalPrice += item.Price * item.Quantity;
         }
         return totalPrice;
 

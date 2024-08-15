@@ -23,10 +23,10 @@ public class CreateShoppingCartCommandHandler : IRequestHandler<CreateShoppingCa
 
     public async Task<ShoppingCartResponse> Handle(CreateShoppingCartCommand request, CancellationToken cancellationToken)
     {
+        new ShoppingCart(request.UserName);
         //TODO: Call discount service and apply coupons
         var shoppingCart = await _cartRepository.UpdateShoppingCart(
             new ShoppingCart(request.UserName, request.Items),cancellationToken);
-
         var shoppingCartResponse = CartMapper.Mapper.Map<ShoppingCartResponse>(shoppingCart);
         return shoppingCartResponse;
 
