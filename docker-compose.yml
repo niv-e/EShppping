@@ -10,5 +10,19 @@ services:
       context: .
       dockerfile: Services/Catalog/Catalog.API/Dockerfile
 
+  cartCache:
+    image: redis:alpine
+  
+  cart.api:
+    image: ${DOCKER_REGISTRY-}catapi
+    build:
+      context: .
+      dockerfile: Services/Cart/Cart.API/Dockerfile
+  
+  portainer:
+    image: portainer/portainer-ce:alpine
+
 volumes:
   mongo_data:
+  redis_data:  
+  portainer_data:  
