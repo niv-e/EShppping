@@ -14,17 +14,17 @@ public static class HostDbDependenciesExtensions
         return services;
     }
 
-    public static IServiceCollection AddDbHealthCheck(this IServiceCollection services,string? connectionString)
+    public static IHealthChecksBuilder AddDbHealthCheck(this IHealthChecksBuilder healthChecksBuilder,string? connectionString)
     {
         connectionString = connectionString ??
             throw new NullReferenceException("Connections string must be provide for preforming database health check");
-        
-        services.AddHealthChecks()
+
+        healthChecksBuilder
             .AddMongoDb(
                 connectionString,
                 "Catalog MongoDB health Check",
                 HealthStatus.Degraded);
 
-        return services;
+        return healthChecksBuilder;
     }
 }

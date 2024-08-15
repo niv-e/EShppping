@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Conventions;
 using Catalog.API.OpenApi;
 using Catalog.Application.Handlers;
@@ -22,13 +23,6 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
-builder.Services.AddSwaggerGen(option => 
-{
-    option.OperationFilter<SwaggerDefaultValues>();
-    option.UseInlineDefinitionsForEnums();
-
-});
 builder.Services.AddApiVersioning(options =>
 {
     options.DefaultApiVersion = new ApiVersion(1);
@@ -40,6 +34,14 @@ builder.Services.AddApiVersioning(options =>
         options.GroupNameFormat = "'v'VVV";
     });
 
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(option => 
+{
+    option.OperationFilter<SwaggerDefaultValues>();
+    option.UseInlineDefinitionsForEnums();
+
+});
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(configurations =>
     configurations.RegisterServicesFromAssembly(typeof(CreateProductHandler).Assembly));
@@ -49,8 +51,8 @@ builder.Services.AddScoped<ITypesRepository, TypesRepository>();
 builder.Services.AddSingleton<DatabaseSeedingTask>();
 builder.Services.AddSingleton<DatabaseSeedingTask>();
 builder.Services.AddDataAccessor();
-builder.Services.AddDbHealthCheck(builder.Configuration["DatabaseSettings:ConnectionString"]);
-builder.Services.AddControllers();
+builder.Services.AddHealthChecks()
+    .AddDbHealthCheck(builder.Configuration["DatabaseSettings:ConnectionString"]);
    
 var app = builder.Build();
 
