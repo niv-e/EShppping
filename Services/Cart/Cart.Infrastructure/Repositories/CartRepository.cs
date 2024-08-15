@@ -1,17 +1,17 @@
-﻿using Basket.Core.Entities;
-using Basket.Core.Repository;
+﻿using Cart.Core.Entities;
+using Cart.Core.Repository;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Basket.Infrastructure.Repositories
+namespace Cart.Infrastructure.Repositories
 {
-    public class BasketRepository : IBasketRepository
+    public class CartRepository : ICartRepository
     {
         private readonly IDistributedCache _redisCache;
 
-        public BasketRepository(IDistributedCache redisCache)
+        public CartRepository(IDistributedCache redisCache)
         {
             _redisCache = redisCache;
         }
@@ -27,7 +27,7 @@ namespace Basket.Infrastructure.Repositories
         public async Task<ShoppingCart> UpdateShoppingCart(ShoppingCart shoppingCart, CancellationToken cancellationToken)
         {
             await _redisCache.SetStringAsync(
-                shoppingCart.userName, 
+                shoppingCart.UserName, 
                 JsonSerializer.Serialize(shoppingCart),
                 cancellationToken);
 
