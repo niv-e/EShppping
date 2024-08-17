@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Discount.Core.Entities;
 
-public record Coupon(string Id, string ProductName, string Description, int Amount)
+public record Coupon
 {
+    public string? Id { get; set; }
+    public string? ProductName { get; set;}
+    public string? Description { get; set;}
+    public int Amount { get; set; }
+    public bool IsActive { get; set; }
 }
