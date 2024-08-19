@@ -10,6 +10,7 @@
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.65.0" />
+
     <PackageReference Include="Npgsql" Version="8.0.3" />
   </ItemGroup>
 
