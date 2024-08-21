@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Utils\MediatorResultPattern\MediatorResultPattern.csproj" />
     <ProjectReference Include="..\Discount.Core\Discount.Core.csproj" />
   </ItemGroup>
 
@@ -14,15 +15,11 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />
-    <PackageReference Include="MediatR" Version="12.2.0" />
 
   </ItemGroup>
     <ItemGroup>
       <Protobuf Include="Protos\discount.proto" GrpcServices="Server" />
     </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Responses\" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="Protos\discount.proto">
