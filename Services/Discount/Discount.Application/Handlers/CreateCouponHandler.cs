@@ -1,27 +1,16 @@
-﻿using CSharpFunctionalExtensions;
-using Discount.Application.Commands;
-using Discount.Application.Errors;
+﻿using Discount.Application.Commands;
 using Discount.Application.Mappers;
-using Discount.Application.Queries;
-using Discount.Application.Responses;
 using Discount.Core.Entities;
 using Discount.Core.Repositories;
 using Discount.Grpc.Protos;
-using Grpc.Core;
+using LanguageExt;
+using LanguageExt.Common;
 using MediatorResultPattern.Contract;
-using MediatR;
-using Microsoft.VisualBasic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static LanguageExt.Prelude;
 
 namespace Discount.Application.Handlers;
 
-public class CreateCouponHandler : IResultRequestHandler<CreateCouponCommand, CouponResponse>
+public class CreateCouponHandler : IResultRequestHandler<CreateCouponCommand, CouponModel>
 {
     private readonly ICouponRepository _couponRepository;
 
@@ -30,14 +19,11 @@ public class CreateCouponHandler : IResultRequestHandler<CreateCouponCommand, Co
         _couponRepository = couponRepository;
     }
 
-    public async Task<Result<CouponResponse, InternalError>> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CouponModel>> Handle(CreateCouponCommand request, CancellationToken cancellationToken)
     {
-        var coupon = DiscountMapper.Mapper.Map<Coupon>(request);
-
-        var createResult = await _couponRepository.CreateCoupon(coupon)
-              ? Result.Success<Coupon, InternalError>(coupon)
-              : Result.Failure<Coupon, InternalError>(new UnknownError($"Failed to create new coupon with the following details: {coupon}"));
-
-        return createResult.Map(coupon => DiscountMapper.Mapper.Map<CouponResponse>(coupon));
+        return await _couponRepository.CreateCoupon(DiscountMapper.Mapper.Map<Coupon>(request))
+            .Map(created => created
+                ? new Result<CouponModel>(DiscountMapper.Mapper.Map<CouponModel>(request))
+                : new Result<CouponModel>(new ArgumentException($"Failed to create coupon with the following details: {request}")));
     }
 }

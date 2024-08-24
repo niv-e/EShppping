@@ -1,13 +1,17 @@
 ﻿using Discount.Application.Commands;
 using Discount.Application.Mappers;
+using Discount.Core.Entities;
 using Discount.Core.Repositories;
 using Discount.Grpc.Protos;
 using Grpc.Core;
+using LanguageExt;
+using LanguageExt.Common;
+using MediatorResultPattern.Contract;
 using MediatR;
 
 namespace Discount.Application.Handlers;
 
-public class DeleteCouponHandler : IRequestHandler<DeleteCouponCommand, bool>
+public class DeleteCouponHandler : IResultRequestHandler<DeleteCouponCommand, bool>
 {
     private readonly ICouponRepository _couponRepository;
 
@@ -16,14 +20,8 @@ public class DeleteCouponHandler : IRequestHandler<DeleteCouponCommand, bool>
         _couponRepository = couponRepository;
     }
 
-    public async Task<bool> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
+    public async Task<Result<bool>> Handle(DeleteCouponCommand request, CancellationToken cancellationToken)
     {
-        var deleteResult = await _couponRepository.DeleteCoupon(request.CouponId);
-        if (deleteResult is false)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound,
-                $"Could not delete coupon with id: {request.CouponId}"));
-        }
-        return deleteResult;
+        return await _couponRepository.DeleteCoupon(request.CouponId);
     }
 }

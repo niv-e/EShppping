@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace MediatorResultPattern.Enumerations;
 

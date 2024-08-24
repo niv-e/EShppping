@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Discount.Application.Commands;
 
-public record CreateCouponCommand : IResultRequest<CouponResponse>
+public record CreateCouponCommand : IResultRequest<CouponModel>
 {
     public string? ProductName { get; set; }
     public string? Description { get; set; }
