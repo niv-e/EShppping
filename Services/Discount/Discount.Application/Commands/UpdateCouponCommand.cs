@@ -1,4 +1,5 @@
 ﻿using Discount.Grpc.Protos;
+using MediatorResultPattern.Contract;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,4 @@ public record UpdateCouponCommand : IRequest<CouponModel>
     public string? ProductName { get; set; }
     public string? Description { get; set; }
     public int Amount { get; set; }
-    public bool IsActive { get; set; }
-
 }

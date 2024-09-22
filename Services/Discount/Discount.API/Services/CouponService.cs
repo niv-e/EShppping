@@ -1,10 +1,9 @@
 ﻿
 using Discount.Application.Commands;
 using Discount.Application.Mappers;
-using Discount.Core.Entities;
+using Discount.Application.Queries;
 using Discount.Grpc.Protos;
 using Grpc.Core;
-using LanguageExt.SomeHelp;
 using MediatR;
 
 namespace Discount.API.Services;
@@ -40,7 +39,7 @@ public class CouponService : CouponGrpcService.CouponGrpcServiceBase
             .Match(
                 isDeleted =>
                 {
-            _logger.Log(isDeleted ? LogLevel.Information : LogLevel.Error, 
+                    _logger.Log(isDeleted ? LogLevel.Information : LogLevel.Error, 
                         isDeleted ? "Coupon with id: {CouponId} deleted successfully" : "Failed to delete coupon with id: {CouponId}", 
                         request.CouponId);
                     return new DeleteCouponResponse
@@ -55,13 +54,25 @@ public class CouponService : CouponGrpcService.CouponGrpcServiceBase
                 });
     }
 
-    public override Task<CouponModel> GetCoupon(GetCouponRequest request, ServerCallContext context)
-    {
-        return base.GetCoupon(request, context);
-    }
+    public override async Task<CouponModel> GetCoupon(GetCouponRequest request, ServerCallContext context) => 
+    (await _mediator.Send(new GetCouponQurey(request.ProductName)))
+    .Match(
+        coupon => coupon,
+        ex =>
+        {
+            _logger.LogError("Failed to get coupon with name: @{ProductName}", request.ProductName);
+            throw new RpcException(new Status(StatusCode.NotFound, $"Failed to get coupon with name: {request.ProductName}"));
 
-    public override Task<CouponModel> UpdateCoupon(UpdateCouponRequest request, ServerCallContext context)
-    {
-        return base.UpdateCoupon(request, context);
-    }
+        }
+    );
+
+    public override Task<CouponModel> UpdateCoupon(UpdateCouponRequest request, ServerCallContext context) =>
+      _mediator.Send(new UpdateCouponCommand
+        {
+            Id = request.Coupon.Id,
+            Amount = request.Coupon.Amount,
+            Description = request.Coupon.Description,
+            ProductName = request.Coupon.ProductName
+        });
+    
 }

@@ -32,8 +32,8 @@ public class CouponRepository : ICouponRepository
     public async Task<bool> CreateCoupon(Coupon coupon)
     {
         await using var connection = new NpgsqlConnection(_configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
-        var createCouponCommand = "INSERT INTO Coupon (ProductName, Description, Amount, IsActive) VALUES (@ProductName, @Description, @Amount, @IsActive)";
-        var createCouponArgs = new { ProductName = coupon.ProductName, Description = coupon.Description, Amount = coupon.Amount, IsActive = coupon.IsActive};
+        var createCouponCommand = "INSERT INTO Coupon (ProductName, Description, Amount, IsActive) VALUES (@ProductName, @Description, @Amount)";
+        var createCouponArgs = new { ProductName = coupon.ProductName, Description = coupon.Description, Amount = coupon.Amount};
         return await connection.ExecuteAsync(createCouponCommand, createCouponArgs) is 0 ?
             false :
             true;

@@ -18,11 +18,26 @@ services:
     build:
       context: .
       dockerfile: Services/Cart/Cart.API/Dockerfile
+
+  discountdb:
+    image: postgres
   
+  #Db Administator tool for PostgresSQL
+  pgadmin:
+    image: dpage/pgadmin4
+  
+  discount.api:
+    image: ${DOCKER_REGISTRY-}discountapi
+    build:
+      context: .
+      dockerfile: Services/Discount/Discount.API/Dockerfile
+
   portainer:
     image: portainer/portainer-ce:alpine
-
+   
 volumes:
   mongo_data:
   redis_data:  
+  postgres_data:
+  pgadmin_data:
   portainer_data:  

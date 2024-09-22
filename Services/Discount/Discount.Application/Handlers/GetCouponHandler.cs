@@ -2,13 +2,14 @@
 using Discount.Application.Queries;
 using Discount.Core.Repositories;
 using Discount.Grpc.Protos;
-using Grpc.Core;
-using MediatR;
+using LanguageExt;
+using LanguageExt.Common;
+using MediatorResultPattern.Contract;
 
 
 namespace Discount.Application.Handlers;
 
-public class GetCouponHandler : IRequestHandler<GetCouponQurey, CouponModel>
+public class GetCouponHandler : IResultRequestHandler<GetCouponQurey, CouponModel>
 {
     private readonly ICouponRepository _couponRepository;
 
@@ -16,15 +17,7 @@ public class GetCouponHandler : IRequestHandler<GetCouponQurey, CouponModel>
     {
         _couponRepository = couponRepository;
     }
-    public async Task<CouponModel> Handle(GetCouponQurey request, CancellationToken cancellationToken)
-    {
-        var coupon = await _couponRepository.GetCoupon(request.ProductName);
-        if (coupon == null)
-        {
-            throw new RpcException(new Status(StatusCode.NotFound,
-                $"Coupon with the product name: {request.ProductName} not found"));
-        }
-        var couponModel = DiscountMapper.Mapper.Map<CouponModel>(coupon);
-        return couponModel;
-    }
+    public async Task<Result<CouponModel>> Handle(GetCouponQurey request, CancellationToken cancellationToken) =>
+     await _couponRepository.GetCoupon(request.ProductName)
+        .Map(optionalCoupon => new Result<CouponModel>(DiscountMapper.Mapper.Map<CouponModel>(optionalCoupon)));
 }

@@ -15,7 +15,6 @@ public class AutoMapperTests
             ProductName = "Product A",
             Description = "Description of Product A",
             Amount = 100, 
-            IsActive = true
         };
 
         var couponResponse = DiscountMapper.Mapper.Map<CouponResponse>(coupon);

@@ -1,5 +1,6 @@
 using Discount.API.Services;
 using Discount.Grpc.Protos;
+using Discount.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +14,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddGrpc();
 
 var app = builder.Build();
-
+app.MigrateDatabase<Program>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

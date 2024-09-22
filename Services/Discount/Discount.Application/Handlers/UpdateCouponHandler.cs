@@ -4,6 +4,9 @@ using Discount.Core.Entities;
 using Discount.Core.Repositories;
 using Discount.Grpc.Protos;
 using Grpc.Core;
+using LanguageExt;
+using LanguageExt.Common;
+using MediatorResultPattern.Contract;
 using MediatR;
 
 namespace Discount.Application.Handlers;

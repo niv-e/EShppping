@@ -1,4 +1,5 @@
 ﻿using Discount.Grpc.Protos;
+using MediatorResultPattern.Contract;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,4 +9,4 @@ using System.Threading.Tasks;
 
 namespace Discount.Application.Queries;
 
-public record GetCouponQurey(string ProductName) : IRequest<CouponModel> { }
+public record GetCouponQurey(string ProductName) : IResultRequest<CouponModel>;
